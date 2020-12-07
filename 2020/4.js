@@ -21,7 +21,8 @@
 	});
 	return lines
 		.filter(l => l.size >= 7)
-		.map(l => [l, fields.find(([k, v]) => !l.has(k) || !v(l.get(k)))])
+		.map(l => [l, fields.find(([field, test]) => !l.has(field) || !test(l.get(field)))])
 		.filter(([, e]) => !e)
-		.map(([l]) => Object.fromEntries(l)).map(({ byr, iyr, eyr, hgt, hcl, ecl, pid }) => `${byr}/${iyr}/${eyr}  ${hgt}  ${hcl}:${ecl}  --  ${pid}`);
+		.map(([l]) => Object.fromEntries(l))
+		.map(({ byr, iyr, eyr, hgt, hcl, ecl, pid }) => `${byr}/${iyr}/${eyr}  ${hgt.padStart(5)}  ${hcl}:${ecl}  --  ${pid}`);
 })();

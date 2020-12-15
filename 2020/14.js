@@ -2,7 +2,7 @@
 ((input = document.body.innerText.trim()) => {
 	input = input.split('\n').map(s => s.split(' = '));
 	let masks = [];
-	let mem = {};
+	const mem = {};
 	for (let [key, value] of input) {
 		if (key === 'mask') {
 			const [init, ...parts] = value.split('').map(m => ({

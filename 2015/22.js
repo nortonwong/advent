@@ -125,7 +125,7 @@
 		}
 		instant(key) {
 			return this.dur() ? 0 : this.stats[key] ?? 0;
- 		}
+		}
 		spawn() {
 			if (!this.dur()) {
 				throw new Error(this);

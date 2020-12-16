@@ -38,7 +38,7 @@
 		happinesses[person].You = 0;
 	});
 	people.push('You');
- 	const permutationsWith = people.reduce((acc, person) => [...append(person, acc)], [[]]);
+	const permutationsWith = people.reduce((acc, person) => [...append(person, acc)], [[]]);
 	const maxWith = permutationsWith.map(happiness).reduce((a, b) => Math.max(a, b));
 	return [maxWithout, maxWith];
 })();

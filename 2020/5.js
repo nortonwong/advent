@@ -30,7 +30,7 @@
 	}
 	let edgedex = 0;
 	while (potential.size > 1) {
- 		const edges = count(8).flatMap(c => [edgedex, 2 ** 7-1-edgedex].map(r => fromSeatNotation(r, c)));
+		const edges = count(8).flatMap(c => [edgedex, 2 ** 7-1-edgedex].map(r => fromSeatNotation(r, c)));
 		for (const nonexistent of edges) {
 			potential.delete(nonexistent);
 		}

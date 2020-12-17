@@ -35,7 +35,7 @@
 					if (solved.includes(tfi)) {
 						continue;
 					}
-					await new Promise(resolve => setTimeout(resolve), 1);
+					await new Promise(resolve => setTimeout(resolve));
 					if (correlates(fi, tfi)) {
 						tfis.push(tfi);
 					}

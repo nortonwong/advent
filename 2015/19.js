@@ -32,7 +32,7 @@
 	const answerB = async () => {
 		let state = [[goal, 0]];
 		while (state.length) {
-			await new Promise(resolve => setTimeout(resolve), 1);
+			await new Promise(resolve => setTimeout(resolve));
 			const [next, turn] = state.pop();
 			console.log('Depth-first search with queue of', state.length, '... Turn', turn);
 			const result = go([next], backward);

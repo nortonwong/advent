@@ -1,5 +1,26 @@
-/* 2015-20 Presents */
-((goal, start = 1, lazy = false) => {
+/* 2015-20 Presents (O(n) Space, O(n*log(n)) Time) */
+((goal, lazy = false) => {
+	const time = Date.now();
+	goal /= (lazy ? 11 : 10);
+	const until = Math.ceil(goal);
+	const sums = new Array(until + 1).fill(0);
+	for (let d = 1; d <= until; d++) {
+		let i = d;
+		const sum = sums[i] += d;
+		if (sum >= goal) {
+			console.log(`Took ${(Date.now() - time) / 1000}s to find ${i} in mode lazy=${lazy}.`);
+			return i;
+		}
+		const end = lazy ? 50 * d : until;
+		for (i += d; i <= end; i += d) {
+			sums[i] += d;
+		}
+	}
+})(34_000_000, true);
+
+/* 2015-20 Presents (O(1) Space, O(n*sqrt(n)) Time) */
+(async (goal, start = 1, lazy = false) => {
+	const time = Date.now();
 	goal /= (lazy ? 11 : 10);
 	function sumOfDivisors(n) {
 		if (n === 1) {
@@ -7,10 +28,14 @@
 		}
 		let sum = 1 + n;
 		let i = 2;
-		const max = n / 2;
+		const max = Math.ceil(Math.sqrt(n));
 		while (i <= max) {
-			if (n % i === 0 && (!lazy || n / i <= 5)) {
+			if (n % i === 0) {
 				sum += i;
+				const pair = n / i;
+				if (i !== pair) {
+					sum += pair;
+				}
 			}
 			i++;
 		}
@@ -26,13 +51,15 @@
 			.map(d => n / d)
 			.reduce((a, b) => a + b, 0);
 	}
+	const summer = lazy ? sumOfLazyDivisors : sumOfDivisors;
 	function ok(n) {
-		return (lazy ? sumOfLazyDivisors : sumOfDivisors)(n) >= goal;
+		return summer(n) >= goal;
 	}
-	const fmt = new Intl.NumberFormat().format;
+	const format = new Intl.NumberFormat().format;
+	const fmt = n => format(n).replaceAll(',', '_');
 	async function check(start, length) {
-		await new Promise(resolve => setTimeout(resolve, 10));
-		console.log(`Checking ${fmt(start)} to ${fmt(start + length - 1)}...`.replaceAll(',', '_'));
+		await new Promise(resolve => setTimeout(resolve));
+		console.debug(`Checking ${fmt(start)} to ${fmt(start + length - 1)}...`);
 		for (let i = start; i < start + length; i++) {
 			if (ok(i)) {
 				return i;
@@ -40,5 +67,7 @@
 		}
 		return check(start + length, length)
 	}
-	return check(start, 1000);
-})(34_000_000).then(console.log);
+	const answer = await check(start, 1000);
+	console.log(`Took ${(Date.now() - time) / 1000}s to find ${fmt(answer)} in mode lazy=${lazy}.`);
+	return answer;
+})(34_000_000, 1, false);

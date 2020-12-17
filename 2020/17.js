@@ -103,11 +103,11 @@
 			dim[p[p.length - 1]] = value;
 		}
 		function cartesianProduct(a_n, b) {
-			return a_n.flatMap(aa => b.map(bb => [...aa, bb]))
+			return a_n.flatMap(aa => b.map(bb => [...aa, bb]));
 		}
 		function neighbors(state, p) {
 			const block = p
-				.reduce((space, dim) => cartesianProduct(space, deltas.map(dd => dim + dd)), [[]])
+				.reduce((space, dim) => cartesianProduct(space, deltas.map(dd => dim + dd)), [[]]);
 			const crowd = block
 				.map(n => count(state, n))
 				.reduce((acc, e) => acc + e, 0);
@@ -118,7 +118,7 @@
 			if (!turns) {
 				return state;
 			}
-			await new Promise(resolve => setTimeout(resolve), 1);
+			await new Promise(resolve => setTimeout(resolve));
 			console.log(`Solving in space^${space}; turn T-${turns}...`);
 			const dims = dimensions(state).map(d => d + 2);
 			const points = dims.reduce((space, dim) => cartesianProduct(space, [...range(0, dim)]), [[]]);
@@ -129,7 +129,7 @@
 				const crowd = neighbors(state, po);
 				assign(next, p, active
 					? (crowd === 2 || crowd === 3)
-					: crowd === 3)
+					: crowd === 3);
 			}
 			return step(next, turns - 1);
 		}
@@ -137,7 +137,7 @@
 			return state.flat(dimensions(state).length - 1)
 				.reduce((acc, e) => acc + Number(e), 0);
 		}
-		return { space, active: active(await step(initial, 6))};
+		return { space, active: active(await step(initial, 6)) };
 	}
 	const solutions = await Promise.all([main(), main(4)]);
 	for (const { space, active } of solutions) {

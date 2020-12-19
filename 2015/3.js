@@ -2,8 +2,8 @@
 (() => {
 	const input = document.body.innerText.trim();
 	let x = 0, y = 0,
-	    a = 0, b = 0,
-	    which = true;
+		a = 0, b = 0,
+		which = true;
 	const houses = new Set(['0,0']);
 	for (const c of input) {
 		switch (c) {

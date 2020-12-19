@@ -54,10 +54,10 @@
 	function toString(state) {
 		return state
 			.map(x => x
-				 .map(y => y
+				.map(y => y
 					.map(z => toChar[z])
 					.join(''))
-				 .join('\n'))
+				.join('\n'))
 			.join('\n\n');
 	}
 	return [active(initial), active(step(initial, 6))];

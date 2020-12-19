@@ -13,7 +13,7 @@
 	});
 	function obviousErrors(ticket) {
 		ticket = ticket.split(',').map(Number);
-		return ticket.filter(t => !predicates.some(p => p(t)));
+		return ticket.filter(t => !predicates.some(test => test(t)));
 	}
 	const errorScore = others.flatMap(obviousErrors).reduce((a, b) => a + b, 0);
 	const tickets = [self, ...others.filter(t => !obviousErrors(t).length)]
@@ -52,9 +52,8 @@
 		}
 	}
 	const departureScore = solved
-		.map((tfi, fi) => [predicates[fi], tfi])
-		.filter(([p, tfi]) => p.fieldName.startsWith('departure '))
-		.map(([ , tfi]) => tickets[0][tfi])
+		.filter((tfi, fi) => predicates[fi].fieldName.startsWith('departure '))
+		.map(tfi => tickets[0][tfi])
 		.reduce((a, b) => a * b);
 	return [errorScore, departureScore]
 })().then(console.log);

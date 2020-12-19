@@ -15,9 +15,7 @@
 		return n;
 	}
 	function addThenMult(math) {
-		const addables = math.split(/ (\*) /)
-			.map(addable => addable === '*' ? '*' : leftToRight(addable));
-		return leftToRight(addables.join(' '));
+		return math.split(' * ').map(leftToRight).reduce((a, b) => a * b);
 	}
 	const compute = precedence ? addThenMult : leftToRight;
 	const values = input.map(line => {

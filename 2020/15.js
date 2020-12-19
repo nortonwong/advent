@@ -1,4 +1,4 @@
-/* 2020-15 Counting */
+/* 2020-15 Van Eck */
 ((...input) => {
 	function compute(until) {
 		const state = input.reduce((acc, n, i) => {

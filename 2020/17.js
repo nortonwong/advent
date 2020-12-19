@@ -139,8 +139,7 @@
 		}
 		return { space, active: active(await step(initial, 6)) };
 	}
-	const solutions = await Promise.all([main(), main(4)]);
-	for (const { space, active } of solutions) {
+	for await (const { space, active } of [main(), main(4)]) {
 		console.log(`Solution in space^${space}: ${active} active`);
 	}
 })();

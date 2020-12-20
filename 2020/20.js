@@ -3,7 +3,6 @@
 	function range(n) {
 		return Array.from({ length: n }).map((_, i) => i);
 	}
-	const rotations = range(4);
 	function flip(s) {
 		return [...s].reverse().join('');
 	}
@@ -14,21 +13,26 @@
 			|| matchable === edge;
 	}
 	const map = range(12).map(() => []);
+	map.getConditions = (r, c) => {
+		const above = map[r-1]?.[c]?.bottom;
+		const rightward = map[r]?.[c+1]?.left;
+		const below = map[r+1]?.[c]?.top;
+		const leftward = map[r]?.[c-1]?.right;
+		return [above, rightward, below, leftward];
+	};
 	map.toString = () => '\n' + map.map(row => row.map(tile => (
 		tile instanceof Tile
-			? `#${tile.id}`.padStart(5)
+			? `#${tile.id}`
 			: tile instanceof Set
-				? `(${tile.size})`.padStart(5)
+				? `(${tile.size})`
 				: '???'
-	)).join(' ')).join('\n') + '\n';
+	).padStart(5)).join(' ')).join('\n') + '\n';
 	const solved = new Set();
 	class Transformable extends Array {
 		generateTransformations() {
 			// 4 rotations (0, 90, 180, 270)
 			// 2 orientations (cw, ccw)
-			const rotated = rotations.map(n => this.rotate(n));
-			const orientations = rotated.flatMap(r => [r, r.flip()]);
-			return orientations;
+			return range(4).map(n => this.rotate(n)).flatMap(r => [r, r.flip()]);
 		}
 		rotate(n) {
 			const s = this.length;
@@ -111,26 +115,14 @@
 			if (this.r !== undefined || this.c !== undefined || solved.has(this)) {
 				throw [this.r, this.c];
 			}
+			const conditionEdges = map.getConditions(r, c);
+			if (!this.variant.matches(conditionEdges)) {
+				throw conditionEdges;
+			}
 			Object.assign(this, { r, c });
 			map[r][c] = this;
 			solved.add(this);
 			choices.delete(this);
-			const above = map[r-1]?.[c]?.bottom;
-			const rightward = map[r]?.[c+1]?.left;
-			const below = map[r+1]?.[c]?.top;
-			const leftward = map[r]?.[c-1]?.right;
-			if (above && this.top !== above) {
-				throw above;
-			}
-			if (rightward && this.right !== rightward) {
-				throw rightward;
-			}
-			if (below && this.bottom !== below) {
-				throw below;
-			}
-			if (leftward && this.left !== leftward) {
-				throw leftward;
-			}
 		}
 		assign(conditionEdges) {
 			this.variants = this.variants.filter(v => v.matches(conditionEdges));
@@ -180,15 +172,14 @@
 		const id = Number(header.match(/\d+/)[0]);
 		return new Tile(id, new Variant(...tile).generateTransformations());
 	});
-	function match(variantA, variantB) {
-		return variantA.filter(edge => variantB.includes(edge));
-	}
-	function matchAny(tile, ignore = new Set()) {
-		const others = new Set(tiles.filter((_, i) => !ignore.has(i)).flatMap(tile => tile.variantEdges));
+	function matchAny(tile) {
 		const edges = new Set(tile.variantEdges);
+		const others = new Set(tiles
+			.filter(t => t !== tile)
+			.flatMap(tile => tile.variantEdges));
 		return [...edges].filter(edge => others.has(edge));
 	}
-	const connectionScores = tiles.map((tile, i) => ({ tile, matches: matchAny(tile, new Set([i])) }));
+	const connectionScores = tiles.map(tile => ({ tile, matches: matchAny(tile) }));
 	const corners = connectionScores.filter(({ matches }) => matches.length === 4);
 	const borders = connectionScores.filter(({ matches }) => matches.length === 6);
 	const interiors = connectionScores.filter(({ matches }) => matches.length === 8);
@@ -218,15 +209,11 @@
 			.filter(([tile, variants]) => variants.length);
 	}
 	function narrow(r, c) {
-		const above = map[r-1]?.[c]?.bottom;
-		const rightward = map[r]?.[c+1]?.left;
-		const below = map[r+1]?.[c]?.top;
-		const leftward = map[r]?.[c-1]?.right;
 		const choices = map[r][c];
 		if (!(choices instanceof Set)) {
 			return;
 		}
-		const conditionEdges = [above, rightward, below, leftward];
+		const conditionEdges = map.getConditions(r, c);
 		const adjacencies = findVariant(conditionEdges, choices);
 		if (adjacencies.length !== 1) {
 			return;

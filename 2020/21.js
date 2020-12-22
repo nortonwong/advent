@@ -1,4 +1,4 @@
-/* 2020-21.1 Allergens */
+/* 2020-21 Allergens */
 ((input = document.body.innerText.trim()) => {
 	input = input.split('\n').map(s => s.match(/^([^(]+) \(contains ([^)]+)\)$/).slice(1));
 	class Set extends window.Set {

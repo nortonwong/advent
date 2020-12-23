@@ -1,6 +1,6 @@
 /* 2020-22 Crab Combat */
 ((recursive = false, input = document.body.innerText.trim()) => {
-	const [[, ...p1], [, ...p2]] = input.split('\n\n').map(deck => deck.split('\n').map(Number));
+	const [p1, p2] = input.split('\n\n').map(deck => deck.split('\n').slice(1).map(Number));
 	function turn(p1, p2, history = new Set()) {
 		const id = [p1, p2].map(p => p.join()).join(' - ');
 		if (history.has(id)) {

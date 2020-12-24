@@ -1,12 +1,6 @@
 /* 2020-23 Crab Cups */
 (async (input, part) => {
-	let [turns, extend, pause] = function() {
-		switch (part) {
-			case 1: return [100, 0, 10];
-			case 2: return [10_000_000, 1_000_000, 500_000];
-			default: throw part;
-		}
-	}();
+	let [turns, extend, pause] = [, [100, 0, 10], [10_000_000, 1_000_000, 500_000]][part];
 	let state = input.split('').map(Number);
 	while (state.length < extend) {
 		state.push(state.length + 1);
